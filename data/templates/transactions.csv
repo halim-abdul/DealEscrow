@@ -1,0 +1,1 @@
+transaction_id,deal_id,payer_user_id,payee_user_id,amount,currency,status,provider_ref,created_at,short_remark
