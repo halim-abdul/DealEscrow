@@ -1,0 +1,40 @@
+{
+  "name": "DealEscrow - Daily Deal Monitor",
+  "nodes": [
+    {
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 24}]}},
+      "id": "schedule",
+      "name": "Daily Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.DEALESCROW_API_URL}}/internal/monitoring/events",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "fetch",
+      "name": "Fetch Monitoring Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [250, 0]
+    },
+    {
+      "parameters": {"conditions": {"boolean": [{"value1": "={{$json.requires_human_review}}", "value2": true}]}},
+      "id": "review",
+      "name": "Needs Human Review?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [500, 0]
+    }
+  ],
+  "connections": {
+    "Daily Schedule": {"main": [[{"node": "Fetch Monitoring Events", "type": "main", "index": 0}]]},
+    "Fetch Monitoring Events": {"main": [[{"node": "Needs Human Review?", "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {}
+}
